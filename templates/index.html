@@ -32,6 +32,11 @@
             <pre id="transaction-details"></pre>
             <button id="execute-btn" style="display: none;">Execute Transaction</button>
         </section>
+        <section id="balance-section">
+            <h2>Check Balance</h2>
+            <input type="text" id="address-input" placeholder="Enter address">
+            <button onclick="checkBalance(document.getElementById('address-input').value)">Check Balance</button>
+        </section>
     </main>
     <script src="{{ url_for('static', filename='js/main.js') }}"></script>
 </body>
