@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Contract Interaction</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <header>
+        <h1>Smart Contract Interaction</h1>
+        <nav>
+            <ul>
+                <li><a href="/">Home</a></li>
+                <li><a href="/wallet">Wallet</a></li>
+                <li><a href="/transaction">Transactions</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <section id="input-section">
+            <h2>Enter your command</h2>
+            <input type="text" id="nlp-input" placeholder="e.g., Transfer 0.1 RBTC to 0x1234...">
+            <button id="process-btn">Process</button>
+        </section>
+        <section id="result-section">
+            <h2>Processed Command</h2>
+            <pre id="processed-result"></pre>
+        </section>
+        <section id="transaction-section">
+            <h2>Transaction Details</h2>
+            <pre id="transaction-details"></pre>
+            <button id="execute-btn" style="display: none;">Execute Transaction</button>
+        </section>
+    </main>
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>
