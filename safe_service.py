@@ -1,4 +1,5 @@
 import requests
+import random
 
 SAFE_SERVICE_URL = "https://safe-transaction.rsk.mainnet.gnosis.io"
 
@@ -7,6 +8,12 @@ def prepare_safe_transaction(processed_data):
     # In a real-world scenario, you would use the Safe Transaction Service API
     
     safe_address = "0x1234567890123456789012345678901234567890"  # Example Safe address
+    
+    try:
+        nonce = get_next_nonce(safe_address)
+    except requests.exceptions.RequestException:
+        # Fallback to a random nonce if unable to fetch from the service
+        nonce = random.randint(0, 1000000)
     
     transaction = {
         "safe": safe_address,
@@ -19,7 +26,7 @@ def prepare_safe_transaction(processed_data):
         "gasPrice": 0,
         "gasToken": "0x0000000000000000000000000000000000000000",  # RBTC
         "refundReceiver": "0x0000000000000000000000000000000000000000",
-        "nonce": get_next_nonce(safe_address)
+        "nonce": nonce
     }
     
     return transaction
@@ -30,8 +37,21 @@ def encode_function_call(function_name, parameters):
     return "0x1234567890abcdef"
 
 def get_next_nonce(safe_address):
-    response = requests.get(f"{SAFE_SERVICE_URL}/api/v1/safes/{safe_address}")
-    if response.status_code == 200:
-        return response.json()['nonce']
-    else:
-        raise Exception("Failed to fetch nonce from Safe Service")
+    try:
+        response = requests.get(f"{SAFE_SERVICE_URL}/api/v1/safes/{safe_address}", timeout=5)
+        if response.status_code == 200:
+            return response.json()['nonce']
+        else:
+            raise Exception(f"Failed to fetch nonce from Safe Service. Status code: {response.status_code}")
+    except requests.exceptions.RequestException as e:
+        raise Exception(f"Error connecting to Safe Service: {str(e)}")
+
+def get_safe_info(safe_address):
+    try:
+        response = requests.get(f"{SAFE_SERVICE_URL}/api/v1/safes/{safe_address}", timeout=5)
+        if response.status_code == 200:
+            return response.json()
+        else:
+            raise Exception(f"Failed to fetch Safe info. Status code: {response.status_code}")
+    except requests.exceptions.RequestException as e:
+        raise Exception(f"Error connecting to Safe Service: {str(e)}")

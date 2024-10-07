@@ -5,6 +5,7 @@ from sqlalchemy.orm import DeclarativeBase
 from nlp_processor import process_natural_language
 from blockchain_service import execute_transaction
 from safe_service import prepare_safe_transaction
+import requests
 
 class Base(DeclarativeBase):
     pass
@@ -30,8 +31,13 @@ def index():
 def process():
     user_input = request.json['input']
     processed_data = process_natural_language(user_input)
-    safe_tx = prepare_safe_transaction(processed_data)
-    return jsonify(safe_tx)
+    try:
+        safe_tx = prepare_safe_transaction(processed_data)
+        return jsonify(safe_tx)
+    except requests.exceptions.ConnectionError:
+        return jsonify({"error": "Unable to connect to the Safe Transaction Service. Please try again later."}), 503
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 @app.route('/execute', methods=['POST'])
 def execute():
