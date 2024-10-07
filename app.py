@@ -3,7 +3,7 @@ from flask import Flask, render_template, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import DeclarativeBase
 from nlp_processor import process_natural_language
-from blockchain_service import execute_transaction
+from blockchain_service import execute_transaction, get_balance
 from safe_service import prepare_safe_transaction
 import requests
 
@@ -35,7 +35,7 @@ def process():
         safe_tx = prepare_safe_transaction(processed_data)
         return jsonify(safe_tx)
     except requests.exceptions.ConnectionError:
-        return jsonify({"error": "Unable to connect to the Safe Transaction Service. Please try again later."}), 503
+        return jsonify({"error": "Unable to connect to the Safe Transaction Service. Using fallback mechanism."}), 503
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
@@ -44,6 +44,14 @@ def execute():
     transaction_data = request.json
     result = execute_transaction(transaction_data)
     return jsonify(result)
+
+@app.route('/check_balance/<address>')
+def check_balance(address):
+    try:
+        balance = get_balance(address)
+        return jsonify({"balance": balance})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 @app.route('/wallet')
 def wallet():

@@ -28,3 +28,11 @@ def execute_transaction(transaction_data):
             'success': False,
             'error': str(e)
         }
+
+def get_balance(address):
+    try:
+        balance_wei = w3.eth.get_balance(address)
+        balance_rbtc = w3.from_wei(balance_wei, 'ether')
+        return f"{balance_rbtc:.4f}"
+    except Exception as e:
+        raise Exception(f"Error fetching balance: {str(e)}")

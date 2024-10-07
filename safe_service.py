@@ -1,19 +1,30 @@
 import requests
 import random
+import json
+import os
 
 SAFE_SERVICE_URL = "https://safe-transaction.rsk.mainnet.gnosis.io"
+MOCK_DATA_FILE = "mock_safe_data.json"
+
+def load_mock_data():
+    if os.path.exists(MOCK_DATA_FILE):
+        with open(MOCK_DATA_FILE, 'r') as f:
+            return json.load(f)
+    return {}
+
+def save_mock_data(data):
+    with open(MOCK_DATA_FILE, 'w') as f:
+        json.dump(data, f)
+
+mock_data = load_mock_data()
 
 def prepare_safe_transaction(processed_data):
-    # This is a placeholder implementation
-    # In a real-world scenario, you would use the Safe Transaction Service API
-    
     safe_address = "0x1234567890123456789012345678901234567890"  # Example Safe address
     
     try:
         nonce = get_next_nonce(safe_address)
     except requests.exceptions.RequestException:
-        # Fallback to a random nonce if unable to fetch from the service
-        nonce = random.randint(0, 1000000)
+        nonce = get_mock_nonce(safe_address)
     
     transaction = {
         "safe": safe_address,
@@ -33,25 +44,43 @@ def prepare_safe_transaction(processed_data):
 
 def encode_function_call(function_name, parameters):
     # Placeholder for function encoding
-    # In a real implementation, you would use Web3.py to encode the function call
     return "0x1234567890abcdef"
 
 def get_next_nonce(safe_address):
     try:
         response = requests.get(f"{SAFE_SERVICE_URL}/api/v1/safes/{safe_address}", timeout=5)
         if response.status_code == 200:
-            return response.json()['nonce']
+            nonce = response.json()['nonce']
+            update_mock_nonce(safe_address, nonce)
+            return nonce
         else:
             raise Exception(f"Failed to fetch nonce from Safe Service. Status code: {response.status_code}")
     except requests.exceptions.RequestException as e:
         raise Exception(f"Error connecting to Safe Service: {str(e)}")
 
+def get_mock_nonce(safe_address):
+    if safe_address not in mock_data:
+        mock_data[safe_address] = {"nonce": 0}
+    nonce = mock_data[safe_address]["nonce"]
+    mock_data[safe_address]["nonce"] += 1
+    save_mock_data(mock_data)
+    return nonce
+
+def update_mock_nonce(safe_address, nonce):
+    mock_data[safe_address] = {"nonce": nonce}
+    save_mock_data(mock_data)
+
 def get_safe_info(safe_address):
     try:
         response = requests.get(f"{SAFE_SERVICE_URL}/api/v1/safes/{safe_address}", timeout=5)
         if response.status_code == 200:
-            return response.json()
+            safe_info = response.json()
+            mock_data[safe_address] = safe_info
+            save_mock_data(mock_data)
+            return safe_info
         else:
             raise Exception(f"Failed to fetch Safe info. Status code: {response.status_code}")
     except requests.exceptions.RequestException as e:
-        raise Exception(f"Error connecting to Safe Service: {str(e)}")
+        if safe_address in mock_data:
+            return mock_data[safe_address]
+        raise Exception(f"Error connecting to Safe Service and no local data available: {str(e)}")
