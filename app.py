@@ -30,10 +30,11 @@ def index():
 @app.route('/process', methods=['POST'])
 def process():
     user_input = request.json['input']
+    language = request.json.get('language', 'en')
     processed_data = process_natural_language(user_input)
     try:
         safe_tx = prepare_safe_transaction(processed_data)
-        return jsonify(safe_tx)
+        return jsonify({**safe_tx, 'language': processed_data['language']})
     except ValueError as e:
         return jsonify({"error": str(e), "scam_detected": True}), 400
     except requests.exceptions.RequestException as e:

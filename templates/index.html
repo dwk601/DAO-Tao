@@ -39,6 +39,16 @@
                 <input type="text" id="nlp-input" placeholder="e.g., Transfer 0.1 RBTC to 0x1234...">
                 <button id="process-btn"><i class="fas fa-play"></i> Process</button>
             </div>
+            <div class="language-section">
+                <span>Detected Language: </span>
+                <span id="detected-language">English</span>
+                <select id="language-select">
+                    <option value="en">English</option>
+                    <option value="es">Español</option>
+                    <option value="fr">Français</option>
+                    <option value="de">Deutsch</option>
+                </select>
+            </div>
         </div>
         <div class="card" id="result-section">
             <h2><i class="fas fa-file-alt"></i> Processed Command</h2>

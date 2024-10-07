@@ -1,0 +1,93 @@
+Description
+Handle Safe indexing events from Transaction Service and deliver as HTTP webhooks. This service should be connected to the Safe Transaction Service:
+
+Transaction service sends events to RabbitMQ.
+Events service holds a database with services to send webhooks to, and some filters like chainId or eventType can be configured.
+Events service connects to RabbitMQ and susbscribes to the events. When an event matches filters for a service, a webhook is posted.
+Events Service Diagram
+
+Endpoints
+Available endpoints:
+
+/health/ -> Check health for the service.
+/admin/ -> Admin panel to edit database models.
+/events/sse/{CHECKSUMMED_SAFE_ADDRESS} -> Server side events endpoint. If SSE_AUTH_TOKEN is defined then authentication will be enabled and header Authorization: Basic $SSE_AUTH_TOKEN must be added to the request.
+How to integrate with the service
+If you want to integrate with the events service, you need to:
+
+Build a REST API with an endpoint that can receive json/application requests (take a look at Events Supported).
+Endpoint need to answer with:
+HTTP 202 status
+Nothing in the body.
+It should answer as soon as posible, as events service will timeout in 2 seconds, if multiple timeouts are detected service will stop sending requests to your endpoint. So you should receive the event, return a HTTP response and then act upon it.
+Configuring HTTP Basic Auth in your endpoint is recommended so a malicious user cannot post fake events to your service.
+Events supported
+Some parameters are common to every event:
+
+address: Safe address.
+type: Event type.
+chainId: Chain id.
+Multisig Confirmation
+{
+  "address": "<Ethereum checksummed address>",
+  "type": "NEW_CONFIRMATION",
+  "owner": "<Ethereum checksummed address>",
+  "safeTxHash": "<0x-prefixed-hex-string>",
+  "chainId": "<stringified-int>"
+}
+MultisigTransaction (executed)
+{
+  "address": "<Ethereum checksummed address>",
+  "type": "EXECUTED_MULTISIG_TRANSACTION",
+  "safeTxHash": "<0x-prefixed-hex-string>",
+  "failed": "true" | "false",
+  "txHash": "<0x-prefixed-hex-string>",
+  "chainId": "<stringified-int>"
+}
+MultisigTransaction (proposed, not executed)
+{
+  "address": "<Ethereum checksummed address>",
+  "type": "PENDING_MULTISIG_TRANSACTION",
+  "safeTxHash": "<0x-prefixed-hex-string>",
+  "chainId": "<stringified-int>"
+}
+Multisig transaction deleted
+{
+  "address": "<Ethereum checksummed address>",
+  "type": "DELETED_MULTISIG_TRANSACTION",
+  "safeTxHash": "<0x-prefixed-hex-string>",
+  "chainId": "<stringified-int>"
+}
+Incoming/Outgoing Ether
+{
+  "address": "<Ethereum checksummed address>",
+  "type": "INCOMING_ETHER" | "OUTGOING_ETHER",
+  "txHash": "<0x-prefixed-hex-string>",
+  "value": "<stringified-int>",
+  "chainId": "<stringified-int>"
+}
+Incoming/Outgoing token (ERC20)
+{
+"address": "<Ethereum checksummed address>",
+"type": "INCOMING_TOKEN" | "OUTGOING_TOKEN",
+"tokenAddress": "<Ethereum checksummed address>",
+"txHash": "<0x-prefixed-hex-string>",
+"value": "<stringified-int>",
+"chainId": "<stringified-int>"
+}
+Incoming/Outgoing tokens (ERC721)
+{
+"address": "<Ethereum checksummed address>",
+"type": "INCOMING_TOKEN" | "OUTGOING_TOKEN",
+"tokenAddress": "<Ethereum checksummed address>",
+"txHash": "<0x-prefixed-hex-string>",
+"tokenId": "<stringified-int>",
+"chainId": "<stringified-int>"
+}
+Message created/confirmed
+{
+"address": "<Ethereum checksummed address>",
+"type": "MESSAGE_CREATED" | "MESSAGE_CONFIRMATION",
+"messageHash": "<0x-prefixed-hex-string>",
+"chainId": "<stringified-int>"
+}

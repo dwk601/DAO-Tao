@@ -8,6 +8,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const checkBalanceBtn = document.getElementById('check-balance-btn');
     const balanceResult = document.getElementById('balance-result');
     const darkModeToggle = document.getElementById('dark-mode-toggle');
+    const detectedLanguage = document.getElementById('detected-language');
+    const languageSelect = document.getElementById('language-select');
 
     // Dark mode toggle
     darkModeToggle.addEventListener('click', () => {
@@ -24,13 +26,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ input }),
+                body: JSON.stringify({ input, language: languageSelect.value }),
             });
             const data = await response.json();
             if (response.ok) {
                 processedResult.textContent = JSON.stringify(data, null, 2);
                 transactionDetails.textContent = JSON.stringify(data, null, 2);
                 executeBtn.style.display = 'block';
+                detectedLanguage.textContent = getLanguageName(data.language);
+                languageSelect.value = data.language;
             } else {
                 if (data.scam_detected) {
                     processedResult.textContent = `Warning: Potential scam detected!\n${data.error}`;
@@ -86,4 +90,14 @@ document.addEventListener('DOMContentLoaded', () => {
             balanceResult.textContent = 'Error fetching balance. Please try again.';
         }
     });
+
+    function getLanguageName(langCode) {
+        const languages = {
+            'en': 'English',
+            'es': 'Español',
+            'fr': 'Français',
+            'de': 'Deutsch'
+        };
+        return languages[langCode] || 'Unknown';
+    }
 });
