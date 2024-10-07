@@ -7,6 +7,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const addressInput = document.getElementById('address-input');
     const checkBalanceBtn = document.getElementById('check-balance-btn');
     const balanceResult = document.getElementById('balance-result');
+    const darkModeToggle = document.getElementById('dark-mode-toggle');
+
+    // Dark mode toggle
+    darkModeToggle.addEventListener('click', () => {
+        document.body.classList.toggle('dark-mode');
+        const isDarkMode = document.body.classList.contains('dark-mode');
+        darkModeToggle.innerHTML = isDarkMode ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
+    });
 
     processBtn.addEventListener('click', async () => {
         const input = nlpInput.value;
