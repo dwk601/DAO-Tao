@@ -15,6 +15,7 @@ spacy = {extras = ["en_core_web_sm"], version = "^3.8.2"}
 web3 = "^7.3.0"
 requests = "^2.32.3"
 langdetect = "^1.0.9"
+flask-socketio = "^5.4.1"
 
 
 [build-system]

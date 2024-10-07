@@ -10,13 +10,115 @@ document.addEventListener('DOMContentLoaded', () => {
     const darkModeToggle = document.getElementById('dark-mode-toggle');
     const detectedLanguage = document.getElementById('detected-language');
     const languageSelect = document.getElementById('language-select');
+    const notificationArea = document.getElementById('notification-area');
+    const safeEventsList = document.getElementById('safe-events-list');
 
-    // Dark mode toggle
+    let socket;
+
+    function initWebSocket() {
+        const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+        socket = new WebSocket(`${protocol}//${window.location.host}/ws`);
+
+        socket.onopen = () => {
+            console.log('WebSocket connection established');
+            showNotification('Connected to real-time updates', 'success');
+        };
+
+        socket.onmessage = (event) => {
+            const data = JSON.parse(event.data);
+            handleRealtimeUpdate(data);
+        };
+
+        socket.onclose = () => {
+            console.log('WebSocket connection closed');
+            showNotification('Real-time connection lost. Reconnecting...', 'warning');
+            setTimeout(initWebSocket, 5000);
+        };
+    }
+
+    initWebSocket();
+
+    function handleRealtimeUpdate(data) {
+        switch (data.type) {
+            case 'transaction_update':
+                updateTransactionStatus(data.transaction);
+                break;
+            case 'balance_update':
+                updateBalance(data.address, data.balance);
+                break;
+            case 'notification':
+                showNotification(data.message, data.level);
+                break;
+            case 'safe_event':
+                handleSafeEvent(data);
+                break;
+        }
+    }
+
+    function updateTransactionStatus(transaction) {
+        const transactionElement = document.querySelector(`[data-tx-hash="${transaction.hash}"]`);
+        if (transactionElement) {
+            transactionElement.querySelector('.status').textContent = transaction.status;
+            transactionElement.classList.add('updated');
+            setTimeout(() => transactionElement.classList.remove('updated'), 3000);
+        } else {
+            const newTransaction = document.createElement('div');
+            newTransaction.classList.add('transaction-item');
+            newTransaction.dataset.txHash = transaction.hash;
+            newTransaction.innerHTML = `
+                <span class="hash">${transaction.hash}</span>
+                <span class="status">${transaction.status}</span>
+            `;
+            document.getElementById('transaction-list').prepend(newTransaction);
+        }
+    }
+
+    function updateBalance(address, balance) {
+        if (addressInput.value.toLowerCase() === address.toLowerCase()) {
+            balanceResult.textContent = `Balance: ${balance} RBTC`;
+            balanceResult.classList.add('updated');
+            setTimeout(() => balanceResult.classList.remove('updated'), 3000);
+        }
+    }
+
+    function showNotification(message, level = 'info') {
+        const notification = document.createElement('div');
+        notification.classList.add('notification', level);
+        notification.textContent = message;
+        notificationArea.appendChild(notification);
+        setTimeout(() => notification.remove(), 5000);
+    }
+
+    function handleSafeEvent(event) {
+        const eventItem = document.createElement('div');
+        eventItem.classList.add('safe-event-item');
+        eventItem.innerHTML = `
+            <h3>${event.type}</h3>
+            <p>Safe Address: ${event.safe_address}</p>
+            <p>Chain ID: ${event.chainId}</p>
+            ${Object.entries(event)
+                .filter(([key]) => !['type', 'safe_address', 'chainId'].includes(key))
+                .map(([key, value]) => `<p>${key}: ${value}</p>`)
+                .join('')}
+        `;
+        safeEventsList.prepend(eventItem);
+        
+        if (safeEventsList.children.length > 10) {
+            safeEventsList.removeChild(safeEventsList.lastChild);
+        }
+    }
+
     darkModeToggle.addEventListener('click', () => {
         document.body.classList.toggle('dark-mode');
         const isDarkMode = document.body.classList.contains('dark-mode');
         darkModeToggle.innerHTML = isDarkMode ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
+        localStorage.setItem('darkMode', isDarkMode);
     });
+
+    if (localStorage.getItem('darkMode') === 'true') {
+        document.body.classList.add('dark-mode');
+        darkModeToggle.innerHTML = '<i class="fas fa-sun"></i>';
+    }
 
     processBtn.addEventListener('click', async () => {
         const input = nlpInput.value;
@@ -35,15 +137,18 @@ document.addEventListener('DOMContentLoaded', () => {
                 executeBtn.style.display = 'block';
                 detectedLanguage.textContent = getLanguageName(data.language);
                 languageSelect.value = data.language;
+                showNotification('Command processed successfully', 'success');
             } else {
                 if (data.scam_detected) {
                     processedResult.textContent = `Warning: Potential scam detected!\n${data.error}`;
                     transactionDetails.textContent = '';
                     executeBtn.style.display = 'none';
+                    showNotification('Potential scam detected!', 'error');
                 } else {
                     processedResult.textContent = `Error: ${data.error}`;
                     transactionDetails.textContent = '';
                     executeBtn.style.display = 'none';
+                    showNotification('Error processing command', 'error');
                 }
             }
         } catch (error) {
@@ -51,6 +156,7 @@ document.addEventListener('DOMContentLoaded', () => {
             processedResult.textContent = 'Error processing input';
             transactionDetails.textContent = '';
             executeBtn.style.display = 'none';
+            showNotification('Error processing command', 'error');
         }
     });
 
@@ -64,10 +170,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 body: transactionDetails.textContent,
             });
             const result = await response.json();
-            alert(result.success ? `Transaction executed successfully. Hash: ${result.tx_hash}` : `Error: ${result.error}`);
+            if (result.success) {
+                showNotification(`Transaction executed successfully. Hash: ${result.tx_hash}`, 'success');
+                updateTransactionStatus({ hash: result.tx_hash, status: 'Pending' });
+            } else {
+                showNotification(`Error: ${result.error}`, 'error');
+            }
         } catch (error) {
             console.error('Error:', error);
-            alert('Error executing transaction');
+            showNotification('Error executing transaction', 'error');
         }
     });
 
@@ -84,10 +195,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 throw new Error('Network response was not ok');
             }
             const data = await response.json();
-            balanceResult.textContent = `Balance: ${data.balance} RBTC`;
+            updateBalance(address, data.balance);
+            showNotification('Balance updated', 'info');
         } catch (error) {
             console.error('Error:', error);
             balanceResult.textContent = 'Error fetching balance. Please try again.';
+            showNotification('Error fetching balance', 'error');
         }
     });
 

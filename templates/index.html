@@ -33,6 +33,7 @@
         </div>
     </header>
     <main class="container">
+        <div id="notification-area"></div>
         <div class="card" id="input-section">
             <h2><i class="fas fa-keyboard"></i> Enter your command</h2>
             <div class="input-group">
@@ -66,6 +67,14 @@
                 <button id="check-balance-btn"><i class="fas fa-search"></i> Check Balance</button>
             </div>
             <p id="balance-result"></p>
+        </div>
+        <div class="card" id="transaction-list-section">
+            <h2><i class="fas fa-list"></i> Recent Transactions</h2>
+            <div id="transaction-list"></div>
+        </div>
+        <div class="card" id="safe-events-section">
+            <h2><i class="fas fa-bell"></i> Safe Events</h2>
+            <div id="safe-events-list"></div>
         </div>
     </main>
     <script src="{{ url_for('static', filename='js/main.js') }}"></script>

@@ -34,6 +34,7 @@ header {
     background-color: var(--primary-color);
     color: #fff;
     padding: 1rem 0;
+    box-shadow: 0 2px 4px var(--shadow-color);
 }
 
 header .container {
@@ -60,6 +61,11 @@ nav ul li {
 nav ul li a {
     color: #fff;
     text-decoration: none;
+    transition: opacity 0.3s;
+}
+
+nav ul li a:hover {
+    opacity: 0.8;
 }
 
 .user-settings {
@@ -74,6 +80,11 @@ nav ul li a {
     font-size: 1.2rem;
     cursor: pointer;
     margin-right: 15px;
+    transition: opacity 0.3s;
+}
+
+#dark-mode-toggle:hover {
+    opacity: 0.8;
 }
 
 .dropdown {
@@ -106,6 +117,7 @@ nav ul li a {
     padding: 12px 16px;
     text-decoration: none;
     display: block;
+    transition: background-color 0.3s;
 }
 
 .dropdown-content a:hover {
@@ -192,6 +204,109 @@ pre {
     margin-top: 1rem;
 }
 
+.language-section {
+    display: flex;
+    align-items: center;
+    margin-top: 1rem;
+}
+
+#language-select {
+    margin-left: 1rem;
+    padding: 0.3rem;
+    border-radius: 5px;
+    background-color: var(--card-background);
+    color: var(--text-color);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+#notification-area {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1000;
+}
+
+.notification {
+    background-color: var(--card-background);
+    color: var(--text-color);
+    padding: 10px 20px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px var(--shadow-color);
+    animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+.notification.success {
+    border-left: 4px solid #2ecc71;
+}
+
+.notification.error {
+    border-left: 4px solid #e74c3c;
+}
+
+.notification.warning {
+    border-left: 4px solid #f39c12;
+}
+
+.notification.info {
+    border-left: 4px solid #3498db;
+}
+
+#transaction-list {
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.transaction-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    transition: background-color 0.3s;
+}
+
+.transaction-item:last-child {
+    border-bottom: none;
+}
+
+.transaction-item:hover {
+    background-color: rgba(255, 255, 255, 0.05);
+}
+
+.transaction-item .hash {
+    font-family: monospace;
+    font-size: 0.9rem;
+}
+
+.transaction-item .status {
+    font-weight: bold;
+}
+
+.transaction-item.updated {
+    animation: highlight 2s ease-in-out;
+}
+
+@keyframes highlight {
+    0% {
+        background-color: rgba(52, 152, 219, 0.5);
+    }
+    100% {
+        background-color: transparent;
+    }
+}
+
 @media (max-width: 768px) {
     header .container {
         flex-direction: column;
@@ -204,5 +319,9 @@ pre {
 
     .user-settings {
         margin-top: 1rem;
+    }
+
+    main {
+        grid-template-columns: 1fr;
     }
 }
