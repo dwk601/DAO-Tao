@@ -47,16 +47,13 @@ def encode_function_call(function_name, parameters):
     return "0x1234567890abcdef"
 
 def get_next_nonce(safe_address):
-    try:
-        response = requests.get(f"{SAFE_SERVICE_URL}/api/v1/safes/{safe_address}", timeout=5)
-        if response.status_code == 200:
-            nonce = response.json()['nonce']
-            update_mock_nonce(safe_address, nonce)
-            return nonce
-        else:
-            raise Exception(f"Failed to fetch nonce from Safe Service. Status code: {response.status_code}")
-    except requests.exceptions.RequestException as e:
-        raise Exception(f"Error connecting to Safe Service: {str(e)}")
+    response = requests.get(f"{SAFE_SERVICE_URL}/api/v1/safes/{safe_address}", timeout=5)
+    if response.status_code == 200:
+        nonce = response.json()['nonce']
+        update_mock_nonce(safe_address, nonce)
+        return nonce
+    else:
+        raise requests.exceptions.RequestException(f"Failed to fetch nonce from Safe Service. Status code: {response.status_code}")
 
 def get_mock_nonce(safe_address):
     if safe_address not in mock_data:
@@ -79,7 +76,7 @@ def get_safe_info(safe_address):
             save_mock_data(mock_data)
             return safe_info
         else:
-            raise Exception(f"Failed to fetch Safe info. Status code: {response.status_code}")
+            raise requests.exceptions.RequestException(f"Failed to fetch Safe info. Status code: {response.status_code}")
     except requests.exceptions.RequestException as e:
         if safe_address in mock_data:
             return mock_data[safe_address]

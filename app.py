@@ -34,10 +34,10 @@ def process():
     try:
         safe_tx = prepare_safe_transaction(processed_data)
         return jsonify(safe_tx)
-    except requests.exceptions.ConnectionError:
-        return jsonify({"error": "Unable to connect to the Safe Transaction Service. Using fallback mechanism."}), 503
+    except requests.exceptions.RequestException as e:
+        return jsonify({"error": "Unable to connect to the Safe Transaction Service. Using fallback mechanism.", "details": str(e)}), 503
     except Exception as e:
-        return jsonify({"error": str(e)}), 500
+        return jsonify({"error": "An unexpected error occurred", "details": str(e)}), 500
 
 @app.route('/execute', methods=['POST'])
 def execute():
@@ -51,7 +51,7 @@ def check_balance(address):
         balance = get_balance(address)
         return jsonify({"balance": balance})
     except Exception as e:
-        return jsonify({"error": str(e)}), 500
+        return jsonify({"error": "Error fetching balance", "details": str(e)}), 500
 
 @app.route('/wallet')
 def wallet():
