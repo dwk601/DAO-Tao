@@ -34,6 +34,8 @@ def process():
     try:
         safe_tx = prepare_safe_transaction(processed_data)
         return jsonify(safe_tx)
+    except ValueError as e:
+        return jsonify({"error": str(e), "scam_detected": True}), 400
     except requests.exceptions.RequestException as e:
         return jsonify({"error": "Unable to connect to the Safe Transaction Service. Using fallback mechanism.", "details": str(e)}), 503
     except Exception as e:

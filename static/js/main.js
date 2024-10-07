@@ -27,12 +27,26 @@ document.addEventListener('DOMContentLoaded', () => {
                 body: JSON.stringify({ input }),
             });
             const data = await response.json();
-            processedResult.textContent = JSON.stringify(data, null, 2);
-            transactionDetails.textContent = JSON.stringify(data, null, 2);
-            executeBtn.style.display = 'block';
+            if (response.ok) {
+                processedResult.textContent = JSON.stringify(data, null, 2);
+                transactionDetails.textContent = JSON.stringify(data, null, 2);
+                executeBtn.style.display = 'block';
+            } else {
+                if (data.scam_detected) {
+                    processedResult.textContent = `Warning: Potential scam detected!\n${data.error}`;
+                    transactionDetails.textContent = '';
+                    executeBtn.style.display = 'none';
+                } else {
+                    processedResult.textContent = `Error: ${data.error}`;
+                    transactionDetails.textContent = '';
+                    executeBtn.style.display = 'none';
+                }
+            }
         } catch (error) {
             console.error('Error:', error);
             processedResult.textContent = 'Error processing input';
+            transactionDetails.textContent = '';
+            executeBtn.style.display = 'none';
         }
     });
 

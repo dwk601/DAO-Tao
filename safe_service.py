@@ -2,6 +2,7 @@ import requests
 import random
 import json
 import os
+from scam_detection import detect_scam
 
 SAFE_SERVICE_URL = "https://safe-transaction.rsk.mainnet.gnosis.io"
 MOCK_DATA_FILE = "mock_safe_data.json"
@@ -21,6 +22,11 @@ mock_data = load_mock_data()
 def prepare_safe_transaction(processed_data):
     safe_address = "0x1234567890123456789012345678901234567890"  # Example Safe address
     
+    # Perform scam detection
+    is_scam, scam_reason = detect_scam(processed_data)
+    if is_scam:
+        raise ValueError(f"Potential scam detected: {scam_reason}")
+
     try:
         nonce = get_next_nonce(safe_address)
     except requests.exceptions.RequestException:
