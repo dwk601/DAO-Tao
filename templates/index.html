@@ -35,7 +35,8 @@
         <section id="balance-section">
             <h2>Check Balance</h2>
             <input type="text" id="address-input" placeholder="Enter address">
-            <button onclick="checkBalance(document.getElementById('address-input').value)">Check Balance</button>
+            <button id="check-balance-btn">Check Balance</button>
+            <p id="balance-result"></p>
         </section>
     </main>
     <script src="{{ url_for('static', filename='js/main.js') }}"></script>
