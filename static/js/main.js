@@ -15,45 +15,49 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let socket;
 
-    function initWebSocket() {
-        const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-        socket = new WebSocket(`${protocol}//${window.location.host}/ws`);
+    function initSocketIO() {
+        socket = io({
+            transports: ['websocket'],
+            upgrade: false
+        });
 
-        socket.onopen = () => {
-            console.log('WebSocket connection established');
+        socket.on('connect', () => {
+            console.log('SocketIO connection established');
             showNotification('Connected to real-time updates', 'success');
-        };
+        });
 
-        socket.onmessage = (event) => {
-            const data = JSON.parse(event.data);
-            handleRealtimeUpdate(data);
-        };
+        socket.on('connection_response', (data) => {
+            console.log('Server connection response:', data);
+        });
 
-        socket.onclose = () => {
-            console.log('WebSocket connection closed');
+        socket.on('disconnect', () => {
+            console.log('SocketIO connection closed');
             showNotification('Real-time connection lost. Reconnecting...', 'warning');
-            setTimeout(initWebSocket, 5000);
-        };
+        });
+
+        socket.on('notification', (data) => {
+            showNotification(data.message, data.level);
+        });
+
+        socket.on('transaction_update', (data) => {
+            updateTransactionStatus(data);
+        });
+
+        socket.on('balance_update', (data) => {
+            updateBalance(data.address, data.balance);
+        });
+
+        socket.on('safe_event', (data) => {
+            handleSafeEvent(data);
+        });
+
+        socket.on('error', (error) => {
+            console.error('SocketIO Error:', error);
+            showNotification('An error occurred with the real-time connection', 'error');
+        });
     }
 
-    initWebSocket();
-
-    function handleRealtimeUpdate(data) {
-        switch (data.type) {
-            case 'transaction_update':
-                updateTransactionStatus(data.transaction);
-                break;
-            case 'balance_update':
-                updateBalance(data.address, data.balance);
-                break;
-            case 'notification':
-                showNotification(data.message, data.level);
-                break;
-            case 'safe_event':
-                handleSafeEvent(data);
-                break;
-        }
-    }
+    initSocketIO();
 
     function updateTransactionStatus(transaction) {
         const transactionElement = document.querySelector(`[data-tx-hash="${transaction.hash}"]`);
@@ -108,16 +112,20 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    darkModeToggle.addEventListener('click', () => {
+    function toggleDarkMode() {
         document.body.classList.toggle('dark-mode');
         const isDarkMode = document.body.classList.contains('dark-mode');
         darkModeToggle.innerHTML = isDarkMode ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
         localStorage.setItem('darkMode', isDarkMode);
+    }
+
+    darkModeToggle.addEventListener('click', () => {
+        toggleDarkMode();
+        showNotification(`${document.body.classList.contains('dark-mode') ? 'Dark' : 'Light'} mode activated`, 'info');
     });
 
     if (localStorage.getItem('darkMode') === 'true') {
-        document.body.classList.add('dark-mode');
-        darkModeToggle.innerHTML = '<i class="fas fa-sun"></i>';
+        toggleDarkMode();
     }
 
     processBtn.addEventListener('click', async () => {
@@ -137,18 +145,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 executeBtn.style.display = 'block';
                 detectedLanguage.textContent = getLanguageName(data.language);
                 languageSelect.value = data.language;
-                showNotification('Command processed successfully', 'success');
             } else {
                 if (data.scam_detected) {
                     processedResult.textContent = `Warning: Potential scam detected!\n${data.error}`;
                     transactionDetails.textContent = '';
                     executeBtn.style.display = 'none';
-                    showNotification('Potential scam detected!', 'error');
                 } else {
                     processedResult.textContent = `Error: ${data.error}`;
                     transactionDetails.textContent = '';
                     executeBtn.style.display = 'none';
-                    showNotification('Error processing command', 'error');
                 }
             }
         } catch (error) {
@@ -196,7 +201,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             const data = await response.json();
             updateBalance(address, data.balance);
-            showNotification('Balance updated', 'info');
         } catch (error) {
             console.error('Error:', error);
             balanceResult.textContent = 'Error fetching balance. Please try again.';
@@ -213,4 +217,13 @@ document.addEventListener('DOMContentLoaded', () => {
         };
         return languages[langCode] || 'Unknown';
     }
+
+    function handleConnectionIssues() {
+        if (!socket.connected) {
+            console.log('Attempting to reconnect...');
+            socket.connect();
+        }
+    }
+
+    setInterval(handleConnectionIssues, 5000);
 });

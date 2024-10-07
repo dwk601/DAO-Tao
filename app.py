@@ -8,13 +8,14 @@ from safe_service import prepare_safe_transaction
 import requests
 from flask_socketio import SocketIO, emit
 from safe_event_service import process_safe_event, filter_event
+import logging
 
 class Base(DeclarativeBase):
     pass
 
 db = SQLAlchemy(model_class=Base)
 app = Flask(__name__)
-socketio = SocketIO(app, cors_allowed_origins="*")
+socketio = SocketIO(app, cors_allowed_origins="*", logger=True, engineio_logger=True)
 
 app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get("DATABASE_URL")
 app.config["SQLALCHEMY_ENGINE_OPTIONS"] = {
@@ -22,6 +23,9 @@ app.config["SQLALCHEMY_ENGINE_OPTIONS"] = {
     "pool_pre_ping": True,
 }
 db.init_app(app)
+
+# Configure logging
+logging.basicConfig(level=logging.DEBUG)
 
 with app.app_context():
     db.create_all()
@@ -86,11 +90,12 @@ def safe_event():
 
 @socketio.on('connect')
 def handle_connect():
-    print('Client connected')
+    app.logger.info('Client connected')
+    emit('connection_response', {'data': 'Connected'})
 
 @socketio.on('disconnect')
 def handle_disconnect():
-    print('Client disconnected')
+    app.logger.info('Client disconnected')
 
 if __name__ == '__main__':
     ssl_context = None
