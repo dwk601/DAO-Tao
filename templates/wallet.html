@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wallet Integration</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <header>
+        <h1>Wallet Integration</h1>
+        <nav>
+            <ul>
+                <li><a href="/">Home</a></li>
+                <li><a href="/wallet">Wallet</a></li>
+                <li><a href="/transaction">Transactions</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <section id="wallet-section">
+            <h2>Connect Your Wallet</h2>
+            <button id="connect-wallet-btn">Connect Wallet</button>
+            <div id="wallet-info" style="display: none;">
+                <p>Address: <span id="wallet-address"></span></p>
+                <p>Balance: <span id="wallet-balance"></span> RBTC</p>
+            </div>
+        </section>
+    </main>
+    <script src="{{ url_for('static', filename='js/wallet.js') }}"></script>
+</body>
+</html>

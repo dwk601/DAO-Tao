@@ -1,0 +1,93 @@
+
+172.31.196.23 - - [07/Oct/2024 19:22:35] "GET /wallet HTTP/1.1" 200 -
+172.31.196.23 - - [07/Oct/2024 19:22:35] "GET /static/css/style.css HTTP/1.1" 304 -
+172.31.196.23 - - [07/Oct/2024 19:22:35] "GET /static/js/wallet.js HTTP/1.1" 200 -
+172.31.196.23 - - [07/Oct/2024 19:23:03] "GET / HTTP/1.1" 200 -
+172.31.196.23 - - [07/Oct/2024 19:23:03] "GET /static/css/style.css HTTP/1.1" 304 -
+172.31.196.23 - - [07/Oct/2024 19:23:03] "GET /static/js/main.js HTTP/1.1" 304 -
+[2024-10-07 19:23:08,384] ERROR in app: Exception on /process [POST]
+Traceback (most recent call last):
+  File "/home/runner/NLP-SmartContract-Assistant/.pythonlibs/lib/python3.11/site-packages/urllib3/connection.py", line 199, in _new_conn
+    sock = connection.create_connection(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/NLP-SmartContract-Assistant/.pythonlibs/lib/python3.11/site-packages/urllib3/util/connection.py", line 60, in create_connection
+    for res in socket.getaddrinfo(host, port, family, socket.SOCK_STREAM):
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/nix/store/f98g7xbckgqbkagdvpzc2r6lv3h1p9ki-python3-3.11.9/lib/python3.11/socket.py", line 962, in getaddrinfo
+    for res in _socket.getaddrinfo(host, port, family, type, proto, flags):
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+socket.gaierror: [Errno -5] No address associated with hostname
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/runner/NLP-SmartContract-Assistant/.pythonlibs/lib/python3.11/site-packages/urllib3/connectionpool.py", line 789, in urlopen
+    response = self._make_request(
+               ^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/NLP-SmartContract-Assistant/.pythonlibs/lib/python3.11/site-packages/urllib3/connectionpool.py", line 490, in _make_request
+    raise new_e
+  File "/home/runner/NLP-SmartContract-Assistant/.pythonlibs/lib/python3.11/site-packages/urllib3/connectionpool.py", line 466, in _make_request
+    self._validate_conn(conn)
+  File "/home/runner/NLP-SmartContract-Assistant/.pythonlibs/lib/python3.11/site-packages/urllib3/connectionpool.py", line 1095, in _validate_conn
+    conn.connect()
+  File "/home/runner/NLP-SmartContract-Assistant/.pythonlibs/lib/python3.11/site-packages/urllib3/connection.py", line 693, in connect
+    self.sock = sock = self._new_conn()
+                       ^^^^^^^^^^^^^^^^
+  File "/home/runner/NLP-SmartContract-Assistant/.pythonlibs/lib/python3.11/site-packages/urllib3/connection.py", line 206, in _new_conn
+    raise NameResolutionError(self.host, self, e) from e
+urllib3.exceptions.NameResolutionError: <urllib3.connection.HTTPSConnection object at 0x7f6efbf4de10>: Failed to resolve 'safe-transaction.rsk.mainnet.gnosis.io' ([Errno -5] No address associated with hostname)
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/runner/NLP-SmartContract-Assistant/.pythonlibs/lib/python3.11/site-packages/requests/adapters.py", line 667, in send
+    resp = conn.urlopen(
+           ^^^^^^^^^^^^^
+  File "/home/runner/NLP-SmartContract-Assistant/.pythonlibs/lib/python3.11/site-packages/urllib3/connectionpool.py", line 843, in urlopen
+    retries = retries.increment(
+              ^^^^^^^^^^^^^^^^^^
+  File "/home/runner/NLP-SmartContract-Assistant/.pythonlibs/lib/python3.11/site-packages/urllib3/util/retry.py", line 519, in increment
+    raise MaxRetryError(_pool, url, reason) from reason  # type: ignore[arg-type]
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+urllib3.exceptions.MaxRetryError: HTTPSConnectionPool(host='safe-transaction.rsk.mainnet.gnosis.io', port=443): Max retries exceeded with url: /api/v1/safes/0x1234567890123456789012345678901234567890 (Caused by NameResolutionError("<urllib3.connection.HTTPSConnection object at 0x7f6efbf4de10>: Failed to resolve 'safe-transaction.rsk.mainnet.gnosis.io' ([Errno -5] No address associated with hostname)"))
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/runner/NLP-SmartContract-Assistant/.pythonlibs/lib/python3.11/site-packages/flask/app.py", line 1473, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/NLP-SmartContract-Assistant/.pythonlibs/lib/python3.11/site-packages/flask/app.py", line 882, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/NLP-SmartContract-Assistant/.pythonlibs/lib/python3.11/site-packages/flask/app.py", line 880, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/NLP-SmartContract-Assistant/.pythonlibs/lib/python3.11/site-packages/flask/app.py", line 865, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/NLP-SmartContract-Assistant/app.py", line 33, in process
+    safe_tx = prepare_safe_transaction(processed_data)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/NLP-SmartContract-Assistant/safe_service.py", line 22, in prepare_safe_transaction
+    "nonce": get_next_nonce(safe_address)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/NLP-SmartContract-Assistant/safe_service.py", line 33, in get_next_nonce
+    response = requests.get(f"{SAFE_SERVICE_URL}/api/v1/safes/{safe_address}")
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/NLP-SmartContract-Assistant/.pythonlibs/lib/python3.11/site-packages/requests/api.py", line 73, in get
+    return request("get", url, params=params, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/NLP-SmartContract-Assistant/.pythonlibs/lib/python3.11/site-packages/requests/api.py", line 59, in request
+    return session.request(method=method, url=url, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/NLP-SmartContract-Assistant/.pythonlibs/lib/python3.11/site-packages/requests/sessions.py", line 589, in request
+    resp = self.send(prep, **send_kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/NLP-SmartContract-Assistant/.pythonlibs/lib/python3.11/site-packages/requests/sessions.py", line 703, in send
+    r = adapter.send(request, **kwargs)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/NLP-SmartContract-Assistant/.pythonlibs/lib/python3.11/site-packages/requests/adapters.py", line 700, in send
+    raise ConnectionError(e, request=request)
+requests.exceptions.ConnectionError: HTTPSConnectionPool(host='safe-transaction.rsk.mainnet.gnosis.io', port=443): Max retries exceeded with url: /api/v1/safes/0x1234567890123456789012345678901234567890 (Caused by NameResolutionError("<urllib3.connection.HTTPSConnection object at 0x7f6efbf4de10>: Failed to resolve 'safe-transaction.rsk.mainnet.gnosis.io' ([Errno -5] No address associated with hostname)"))
+172.31.196.23 - - [07/Oct/2024 19:23:08] "POST /process HTTP/1.1" 500 -
