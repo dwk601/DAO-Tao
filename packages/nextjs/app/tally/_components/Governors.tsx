@@ -44,10 +44,7 @@ const GovernorsTable = ({ governors }: { governors: Governor[] }) => {
       </thead>
       <tbody>
         {governors.map((governor, index) => {
-          const [token] = governor.tokens;
-
-          const totalVoters = token.stats.voters;
-
+          const totalVoters = governor.delegatesCount;
           return (
             <tr key={`governor-row-${index}`}>
               <td>{governor.name}</td>
