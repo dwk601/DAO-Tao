@@ -1,9 +1,8 @@
 "use client";
 
-import Link from "next/link";
+import { CheckSquare, Clock, Cpu, Gavel, RefreshCcw, Shield, ThumbsUp, Zap } from "lucide-react";
 import type { NextPage } from "next";
 import { useAccount } from "wagmi";
-import { BugAntIcon, MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 import { Address } from "~~/components/scaffold-eth";
 
 const Home: NextPage = () => {
@@ -11,56 +10,88 @@ const Home: NextPage = () => {
 
   return (
     <>
-      <div className="flex items-center flex-col flex-grow pt-10">
-        <div className="px-5">
-          <h1 className="text-center">
-            <span className="block text-2xl mb-2">Welcome to</span>
-            <span className="block text-4xl font-bold">Scaffold-ETH 2</span>
-          </h1>
-          <div className="flex justify-center items-center space-x-2 flex-col sm:flex-row">
-            <p className="my-2 font-medium">Connected Address:</p>
-            <Address address={connectedAddress} />
-          </div>
-          <p className="text-center text-lg">
-            Get started by editing{" "}
-            <code className="italic bg-base-300 text-base font-bold max-w-full break-words break-all inline-block">
-              packages/nextjs/app/page.tsx
-            </code>
-          </p>
-          <p className="text-center text-lg">
-            Edit your smart contract{" "}
-            <code className="italic bg-base-300 text-base font-bold max-w-full break-words break-all inline-block">
-              YourContract.sol
-            </code>{" "}
-            in{" "}
-            <code className="italic bg-base-300 text-base font-bold max-w-full break-words break-all inline-block">
-              packages/hardhat/contracts
-            </code>
-          </p>
-        </div>
+      {/* Hero Section */}
+      <div className="flex flex-col items-center justify-center min-h-screen">
+        <h1 className="text-5xl font-extrabold mb-4 text-center">
+          Revolutionize Your DAO Governance with AI & Automation
+        </h1>
+        <h2 className="text-2xl mb-8 text-center">
+          Streamline decision-making and governance for your DAO across multiple blockchains—powered by advanced AI and
+          automation.
+        </h2>
+        <Address address={connectedAddress} />
+        {/* Add your hero visual here */}
+      </div>
 
-        <div className="flex-grow bg-base-300 w-full mt-16 px-8 py-12">
-          <div className="flex justify-center items-center gap-12 flex-col sm:flex-row">
-            <div className="flex flex-col bg-base-100 px-10 py-10 text-center items-center max-w-xs rounded-3xl">
-              <BugAntIcon className="h-8 w-8 fill-secondary" />
-              <p>
-                Tinker with your smart contract using the{" "}
-                <Link href="/debug" passHref className="link">
-                  Debug Contracts
-                </Link>{" "}
-                tab.
-              </p>
-            </div>
-            <div className="flex flex-col bg-base-100 px-10 py-10 text-center items-center max-w-xs rounded-3xl">
-              <MagnifyingGlassIcon className="h-8 w-8 fill-secondary" />
-              <p>
-                Explore your local transactions with the{" "}
-                <Link href="/blockexplorer" passHref className="link">
-                  Block Explorer
-                </Link>{" "}
-                tab.
-              </p>
-            </div>
+      {/* Value Proposition Section */}
+      <div id="value-proposition" className="py-16 px-8 bg-base-100 text-center">
+        <h2 className="text-4xl font-bold mb-8">Why Dao-Tao? Automate. Simplify. Scale.</h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+          <div className="flex flex-col items-center">
+            <Clock className="h-12 w-12 mb-4" />
+            <p className="font-medium">
+              Get real-time updates on DAO proposals directly in your inbox, powered by our AI engine.
+            </p>
+          </div>
+          <div className="flex flex-col items-center">
+            <RefreshCcw className="h-12 w-12 mb-4" />
+            <p className="font-medium">Manage governance and voting across multiple blockchain networks seamlessly.</p>
+          </div>
+          <div className="flex flex-col items-center">
+            <Cpu className="h-12 w-12 mb-4" />
+            <p className="font-medium">
+              Our AI analyzes proposals and suggests the best actions to simplify decision-making.
+            </p>
+          </div>
+          <div className="flex flex-col items-center">
+            <Shield className="h-12 w-12 mb-4" />
+            <p className="font-medium">
+              Cast your vote safely and securely with automated smart contract interactions.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      {/* How It Works Section */}
+      <div className="py-16 px-8 bg-base-200 text-center">
+        <h2 className="text-4xl font-bold mb-8">How Dao-Tao Works</h2>
+        <div className="flex flex-col items-center space-y-8">
+          <div className="flex flex-col items-center">
+            <Zap className="h-12 w-12 mb-4" />
+            <p className="font-medium">Securely connect your Web3 wallet to start.</p>
+          </div>
+          <div className="flex flex-col items-center">
+            <CheckSquare className="h-12 w-12 mb-4" />
+            <p className="font-medium">Choose the DAOs you’re interested in from a list of cross-chain DAOs.</p>
+          </div>
+          <div className="flex flex-col items-center">
+            <Gavel className="h-12 w-12 mb-4" />
+            <p className="font-medium">
+              Receive proposal notifications in real time, and view detailed insights powered by AI.
+            </p>
+          </div>
+          <div className="flex flex-col items-center">
+            <ThumbsUp className="h-12 w-12 mb-4" />
+            <p className="font-medium">Vote directly from our platform with one click. Safe and automated.</p>
+          </div>
+        </div>
+      </div>
+
+      {/* Use Cases Section */}
+      <div className="py-16 px-8 bg-base-100 text-center">
+        <h2 className="text-4xl font-bold mb-8">Perfect for All Types of DAOs</h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="flex flex-col items-center">
+            <Clock className="h-12 w-12 mb-4" />
+            <p className="font-medium">Govern DAOs across Ethereum, Binance Smart Chain, and more.</p>
+          </div>
+          <div className="flex flex-col items-center">
+            <RefreshCcw className="h-12 w-12 mb-4" />
+            <p className="font-medium">Track and manage hundreds of DAO proposals automatically.</p>
+          </div>
+          <div className="flex flex-col items-center">
+            <Cpu className="h-12 w-12 mb-4" />
+            <p className="font-medium">Enable community voting with secure, automated processes.</p>
           </div>
         </div>
       </div>
