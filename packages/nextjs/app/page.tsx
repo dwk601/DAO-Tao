@@ -29,55 +29,51 @@ const Home: NextPage = () => {
       <div id="value-proposition" className="py-16 px-8 bg-base-100 text-center">
         <h2 className="text-4xl font-bold mb-8">Why Dao-Tao? Automate. Simplify. Scale.</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-          <div className="flex flex-col max-w-sm">
-            <div className="flex flex-col gap-2 p-4 bg-base-200 rounded-t-box items-center h-60">
-              <Clock className="h-12 w-12 mb-4" />
+          <div className="flex flex-col gap-6 bg-base-200 rounded-box p-6 max-w-sm">
+            <div className="flex justify-between items-center">
+              <Clock className="h-12 w-12" />
+              <span className="font-bold text-xl">Feature 1</span>
+            </div>
+            <div className="flex flex-col gap-2">
               <p className="font-medium text-center">
                 Get real-time updates on DAO proposals directly in your inbox, powered by our AI engine.
               </p>
             </div>
-            <div className="bg-[url('/backgrounds/forest.jpg')] bg-center w-full h-60"></div>
-            <div className="flex justify-between bg-neutral text-neutral-content p-4 rounded-b-box">
-              <span className="font-bold text-xl">Feature 1</span>
-            </div>
           </div>
 
-          <div className="flex flex-col max-w-sm">
-            <div className="flex flex-col gap-2 p-4 bg-base-200 rounded-t-box items-center h-60">
-              <RefreshCcw className="h-12 w-12 mb-4" />
+          <div className="flex flex-col gap-6 bg-base-200 rounded-box p-6 max-w-sm">
+            <div className="flex justify-between items-center">
+              <RefreshCcw className="h-12 w-12" />
+              <span className="font-bold text-xl">Feature 2</span>
+            </div>
+            <div className="flex flex-col gap-2">
               <p className="font-medium text-center">
                 Manage governance and voting across multiple blockchain networks seamlessly.
               </p>
             </div>
-            <div className="bg-[url('/backgrounds/forest.jpg')] bg-center w-full h-60"></div>
-            <div className="flex justify-between bg-neutral text-neutral-content p-4 rounded-b-box">
-              <span className="font-bold text-xl">Feature 2</span>
-            </div>
           </div>
 
-          <div className="flex flex-col max-w-sm">
-            <div className="flex flex-col gap-2 p-4 bg-base-200 rounded-t-box items-center h-60">
-              <Cpu className="h-12 w-12 mb-4" />
+          <div className="flex flex-col gap-6 bg-base-200 rounded-box p-6 max-w-sm">
+            <div className="flex justify-between items-center">
+              <Cpu className="h-12 w-12" />
+              <span className="font-bold text-xl">Feature 3</span>
+            </div>
+            <div className="flex flex-col gap-2">
               <p className="font-medium text-center">
                 Our AI analyzes proposals and suggests the best actions to simplify decision-making.
               </p>
             </div>
-            <div className="bg-[url('/backgrounds/forest.jpg')] bg-center w-full h-60"></div>
-            <div className="flex justify-between bg-neutral text-neutral-content p-4 rounded-b-box">
-              <span className="font-bold text-xl">Feature 3</span>
-            </div>
           </div>
 
-          <div className="flex flex-col max-w-sm">
-            <div className="flex flex-col gap-2 p-4 bg-base-200 rounded-t-box items-center h-60">
-              <Shield className="h-12 w-12 mb-4" />
+          <div className="flex flex-col gap-6 bg-base-200 rounded-box p-6 max-w-sm">
+            <div className="flex justify-between items-center">
+              <Shield className="h-12 w-12" />
+              <span className="font-bold text-xl">Feature 4</span>
+            </div>
+            <div className="flex flex-col gap-2">
               <p className="font-medium text-center">
                 Cast your vote safely and securely with automated smart contract interactions.
               </p>
-            </div>
-            <div className="bg-[url('/backgrounds/forest.jpg')] bg-center w-full h-60"></div>
-            <div className="flex justify-between bg-neutral text-neutral-content p-4 rounded-b-box">
-              <span className="font-bold text-xl">Feature 4</span>
             </div>
           </div>
         </div>
