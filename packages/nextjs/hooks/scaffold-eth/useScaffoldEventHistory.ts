@@ -97,7 +97,7 @@ export const useScaffoldEventHistory = <
 
   const isContractAddressAndClientReady = Boolean(deployedContractData?.address) && Boolean(publicClient);
 
-  const query = useInfiniteQuery({
+  const query = useInfiniteQuery<any, any, any, any>({
     queryKey: [
       "eventHistory",
       {

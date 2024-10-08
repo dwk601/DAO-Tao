@@ -28,7 +28,6 @@ export const AddressInput = ({ value, name, placeholder, onChange, disabled }: C
     name: settledValue,
     chainId: 1,
     query: {
-      gcTime: 30_000,
       enabled: isDebouncedValueLive && isENS(debouncedValue),
     },
   });
@@ -44,7 +43,6 @@ export const AddressInput = ({ value, name, placeholder, onChange, disabled }: C
     chainId: 1,
     query: {
       enabled: isAddress(debouncedValue),
-      gcTime: 30_000,
     },
   });
 
@@ -53,7 +51,6 @@ export const AddressInput = ({ value, name, placeholder, onChange, disabled }: C
     chainId: 1,
     query: {
       enabled: Boolean(ensName),
-      gcTime: 30_000,
     },
   });
 

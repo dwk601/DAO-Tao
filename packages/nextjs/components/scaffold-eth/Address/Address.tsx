@@ -98,7 +98,6 @@ export const Address = ({
     chainId: 1,
     query: {
       enabled: Boolean(ens),
-      gcTime: 30_000,
     },
   });
 
