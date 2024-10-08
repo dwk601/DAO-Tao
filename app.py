@@ -1,75 +1,27 @@
-import os
 from flask import Flask, render_template, request, jsonify
-from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy.orm import DeclarativeBase
-from nlp_processor import process_natural_language
-from blockchain_service import execute_transaction, get_balance
-from safe_service import prepare_safe_transaction
+from flask_socketio import SocketIO
+from web3 import Web3
 import requests
-from flask_socketio import SocketIO, emit
-from safe_event_service import process_safe_event, filter_event
-import logging
+import os
+from anthropic import Anthropic
 
-class Base(DeclarativeBase):
-    pass
-
-db = SQLAlchemy(model_class=Base)
 app = Flask(__name__)
-socketio = SocketIO(app, cors_allowed_origins="*", logger=True, engineio_logger=True)
+app.config['SECRET_KEY'] = os.urandom(24)
+socketio = SocketIO(app)
 
-app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get("DATABASE_URL")
-app.config["SQLALCHEMY_ENGINE_OPTIONS"] = {
-    "pool_recycle": 300,
-    "pool_pre_ping": True,
-}
-db.init_app(app)
+# Initialize Web3 with Infura
+w3 = Web3(Web3.HTTPProvider(f'https://172.20.0.36:8545'))
+# 172.20.0.36:8545
 
-# Configure logging
-logging.basicConfig(level=logging.DEBUG)
-
-with app.app_context():
-    db.create_all()
+CLAUDE_API_KEY = os.environ.get('CLAUDE_API_KEY')
 
 @app.route('/')
 def index():
     return render_template('index.html')
 
-@app.route('/process', methods=['POST'])
-def process():
-    user_input = request.json['input']
-    language = request.json.get('language', 'en')
-    processed_data = process_natural_language(user_input)
-    try:
-        safe_tx = prepare_safe_transaction(processed_data)
-        socketio.emit('notification', {'message': 'Transaction prepared successfully', 'level': 'success'})
-        return jsonify({**safe_tx, 'language': processed_data['language']})
-    except ValueError as e:
-        socketio.emit('notification', {'message': str(e), 'level': 'error'})
-        return jsonify({"error": str(e), "scam_detected": True}), 400
-    except requests.exceptions.RequestException as e:
-        socketio.emit('notification', {'message': 'Unable to connect to the Safe Transaction Service. Using fallback mechanism.', 'level': 'warning'})
-        return jsonify({"error": "Unable to connect to the Safe Transaction Service. Using fallback mechanism.", "details": str(e)}), 503
-    except Exception as e:
-        socketio.emit('notification', {'message': 'An unexpected error occurred', 'level': 'error'})
-        return jsonify({"error": "An unexpected error occurred", "details": str(e)}), 500
-
-@app.route('/execute', methods=['POST'])
-def execute():
-    transaction_data = request.json
-    result = execute_transaction(transaction_data)
-    if result['success']:
-        socketio.emit('transaction_update', {'hash': result['tx_hash'], 'status': 'Pending'})
-    return jsonify(result)
-
-@app.route('/check_balance/<address>')
-def check_balance(address):
-    try:
-        balance = get_balance(address)
-        socketio.emit('balance_update', {'address': address, 'balance': balance})
-        return jsonify({"balance": balance})
-    except Exception as e:
-        socketio.emit('notification', {'message': 'Error fetching balance', 'level': 'error'})
-        return jsonify({"error": "Error fetching balance", "details": str(e)}), 500
+@app.route('/test')
+def test():
+    return render_template('test.html')
 
 @app.route('/wallet')
 def wallet():
@@ -79,26 +31,110 @@ def wallet():
 def transaction():
     return render_template('transaction.html')
 
-@app.route('/safe_event', methods=['POST'])
-def safe_event():
-    event_data = request.json
-    if filter_event(event_data):
-        processed_event = process_safe_event(event_data)
-        socketio.emit('safe_event', processed_event)
-        return '', 202
-    return '', 204
+def ask_claude(prompt):
+    client = Anthropic(api_key=CLAUDE_API_KEY)
+
+    try:
+        response = client.messages.create(
+            model="claude-3-sonnet-20240229",
+            max_tokens=1000,
+            temperature=0,
+            system="You are an AI assistant for a blockchain application. Respond with helpful and accurate information.",
+            messages=[{
+                "role": "user",
+                "content": prompt
+            }])
+        return response.content
+    except Exception as e:
+        print(f"Error in ask_claude: {str(e)}")
+        return f"Error processing input: {str(e)}"
+
+@app.route('/process', methods=['POST'])
+def process():
+    input_data = request.json['input']
+    try:
+        processed_result = ask_claude(input_data)
+        return jsonify({'result': processed_result[0].text})
+    except Exception as e:
+        error_message = f"Error processing input: {str(e)}"
+        return jsonify({'error': error_message}), 500
+
+@app.route('/execute', methods=['POST'])
+def execute():
+    transaction_data = request.json
+    try:
+        # Get the nonce
+        nonce = w3.eth.get_transaction_count(transaction_data['from'])
+
+        # Build the transaction
+        tx = {
+            'nonce': nonce,
+            'to': transaction_data['recipient'],
+            'value': w3.to_wei(transaction_data['amount'], 'ether'),
+            'gas': int(transaction_data['gasLimit']),
+            'gasPrice': w3.to_wei(transaction_data['gasPrice'], 'gwei'),
+            'chainId': 1  # Ethereum Mainnet chain ID
+        }
+
+        # Sign the transaction
+        signed_tx = w3.eth.account.sign_transaction(tx, private_key=os.environ.get('PRIVATE_KEY'))
+
+        # Send the transaction
+        tx_hash = w3.eth.send_raw_transaction(signed_tx.rawTransaction)
+
+        return jsonify({'success': True, 'tx_hash': tx_hash.hex()})
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)})
+
+@app.route('/check_balance/<address>')
+def check_balance(address):
+    try:
+        balance = w3.eth.get_balance(address)
+        balance_in_eth = w3.from_wei(balance, 'ether')
+        return jsonify({'balance': float(balance_in_eth)})
+    except Exception as e:
+        return jsonify({'error': str(e)}), 400
+
+@app.route('/transaction_history')
+def transaction_history():
+    try:
+        # Replace this with the actual user's address
+        address = '0x1234567890123456789012345678901234567890'
+        # Get the latest block number
+        latest_block = w3.eth.get_block('latest')['number']
+        # Get the last 10 blocks
+        transactions = []
+        for i in range(latest_block, latest_block - 10, -1):
+            block = w3.eth.get_block(i, full_transactions=True)
+            for tx in block.transactions:
+                if tx['from'] == address or tx['to'] == address:
+                    transactions.append({
+                        'hash': tx['hash'].hex(),
+                        'from': tx['from'],
+                        'to': tx['to'],
+                        'value': w3.from_wei(tx['value'], 'ether'),
+                        'status': 'Confirmed'
+                    })
+        return jsonify({'transactions': transactions[:10]})  # Return only the last 10 transactions
+    except Exception as e:
+        return jsonify({'error': str(e)}), 400
+
+@app.route('/out')
+def out():
+    return render_template('out/index.html')
 
 @socketio.on('connect')
 def handle_connect():
-    app.logger.info('Client connected')
-    emit('connection_response', {'data': 'Connected'})
+    print('Client connected')
 
 @socketio.on('disconnect')
 def handle_disconnect():
-    app.logger.info('Client disconnected')
+    print('Client disconnected')
+
+@socketio.on('transaction_update')
+def handle_transaction_update(data):
+    # Process transaction update
+    socketio.emit('transaction_update', {'message': f"Transaction update: {data['message']}"})
 
 if __name__ == '__main__':
-    ssl_context = None
-    if os.environ.get('FLASK_ENV') == 'production':
-        ssl_context = 'adhoc'
-    socketio.run(app, host='0.0.0.0', port=5000, debug=True, ssl_context=ssl_context)
+    socketio.run(app, host='127.0.0.1', port=5000, debug=False)

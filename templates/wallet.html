@@ -3,30 +3,57 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Wallet Integration</title>
+    <title>DAO TAO - Wallet</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js" integrity="sha512-q/dWJ3kcmjBLU4Qc47E4A9kTB4m3wuTY7vkFJDTZKjTs8jhyGQnaUrxa0Ytd0ssMZhbNua9hE+E7Qv1j+DyZwA==" crossorigin="anonymous"></script>
 </head>
 <body>
     <header>
-        <h1>Wallet Integration</h1>
-        <nav>
-            <ul>
-                <li><a href="/">Home</a></li>
-                <li><a href="/wallet">Wallet</a></li>
-                <li><a href="/transaction">Transactions</a></li>
-            </ul>
-        </nav>
-    </header>
-    <main>
-        <section id="wallet-section">
-            <h2>Connect Your Wallet</h2>
-            <button id="connect-wallet-btn">Connect Wallet</button>
-            <div id="wallet-info" style="display: none;">
-                <p>Address: <span id="wallet-address"></span></p>
-                <p>Balance: <span id="wallet-balance"></span> RBTC</p>
+        <div class="container">
+            <div class="logo-container">
+                <img src="{{ url_for('static', filename='images/IMG_1458-removebg-preview.png') }}" alt="DAO TAO Logo" class="logo">
+                <h1>DAO TAO</h1>
             </div>
-        </section>
+            <nav>
+                <ul>
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/wallet">Wallet</a></li>
+                    <li><a href="/transaction">Transactions</a></li>
+                    <li><a href="/test">Test</a></li>
+                </ul>
+            </nav>
+            <div class="user-settings">
+                <button id="dark-mode-toggle"><i class="fas fa-moon"></i></button>
+                <div class="dropdown">
+                    <button class="dropbtn"><i class="fas fa-user"></i></button>
+                    <div class="dropdown-content">
+                        <a href="#">Profile</a>
+                        <a href="#">Settings</a>
+                        <a href="#">Logout</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+    <main class="container">
+        <h1>Wallet</h1>
+        <div class="card-grid">
+            <div class="card">
+                <h2>Wallet Balance</h2>
+                <p id="wallet-balance">Loading...</p>
+                <input type="text" id="address-input" placeholder="Enter wallet address">
+                <button id="check-balance-btn">Check Balance</button>
+            </div>
+            <div class="card">
+                <h2>Transaction History</h2>
+                <ul id="transaction-history">
+                    <li>Loading transaction history...</li>
+                </ul>
+            </div>
+        </div>
     </main>
-    <script src="{{ url_for('static', filename='js/wallet.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
 </body>
 </html>

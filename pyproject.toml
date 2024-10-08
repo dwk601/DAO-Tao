@@ -1,23 +1,20 @@
 [tool.poetry]
-name = "repl-nix-nlp-smartcontract-assistant"
+name = "NLP-SmartContract-Assistant"
 version = "0.1.0"
 description = ""
 authors = ["Your Name <you@example.com>"]
-readme = "README.md"
 
 [tool.poetry.dependencies]
-python = "^3.11"
-email-validator = "^2.2.0"
-flask = "^3.0.3"
-flask-sqlalchemy = "^3.1.1"
-psycopg2-binary = "^2.9.9"
-spacy = {extras = ["en_core_web_sm"], version = "^3.8.2"}
-web3 = "^7.3.0"
-requests = "^2.32.3"
-langdetect = "^1.0.9"
-flask-socketio = "^5.4.1"
+python = "^3.10"
+flask = ">=3.0.3"
+flask-socketio = ">=5.4.1"
+web3 = "*"
+requests = "*"
+anthropic = "0.35.0"
+python-dotenv = "^1.0.1"
 
+[tool.poetry.dev-dependencies]
 
 [build-system]
-requires = ["poetry-core"]
+requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"

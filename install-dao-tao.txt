@@ -1,0 +1,8 @@
+conda create -n dao python=3.10
+conda activate dao
+
+pip install flask
+pip install flask-socketio
+pip install web3
+pip install requests
+pip install anthropic

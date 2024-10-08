@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DAO TAO - Transaction</title>
+    <title>DAO TAO - Test Page</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
@@ -38,33 +38,8 @@
         </div>
     </header>
     <main class="container">
-        <h1>Create Transaction</h1>
-        <div class="card">
-            <h2>New Transaction</h2>
-            <form id="transaction-form">
-                <label for="from">From Address:</label>
-                <input type="text" id="from" name="from" required>
-                <label for="recipient">Recipient Address:</label>
-                <input type="text" id="recipient" name="recipient" required>
-                <label for="amount">Amount (ETH):</label>
-                <input type="number" id="amount" name="amount" step="0.000001" required>
-                <label for="gas-price">Gas Price (Gwei):</label>
-                <input type="number" id="gas-price" name="gas-price" step="1" value="20">
-                <label for="gas-limit">Gas Limit:</label>
-                <input type="number" id="gas-limit" name="gas-limit" step="1000" value="21000">
-                <button type="submit">Send Transaction</button>
-            </form>
-        </div>
-        <div class="card">
-            <h2>Transaction Status</h2>
-            <div id="transaction-status"></div>
-        </div>
-        <div class="card">
-            <h2>Recent Transactions</h2>
-            <ul id="recent-transactions">
-                <li>Loading recent transactions...</li>
-            </ul>
-        </div>
+        <h1>Test Page</h1>
+        <p>This is the test page for DAO TAO. You can add your test content here.</p>
     </main>
     <script src="{{ url_for('static', filename='js/main.js') }}"></script>
 </body>
