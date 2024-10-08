@@ -6,3 +6,9 @@ pip install flask-socketio
 pip install web3
 pip install requests
 pip install anthropic
+
+# pip install eth-brownie
+python3 -m pip install --user pipx
+python3 -m pipx ensurepath
+pipx install eth-brownie
+pipx upgrade eth-brownie
