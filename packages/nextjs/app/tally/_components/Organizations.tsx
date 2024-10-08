@@ -1,24 +1,24 @@
-import { Governor } from "../../../autogen/schema";
-import { useGovernorsQuery } from "../../../hooks/generated";
+import { Organization } from "../../../autogen/schema";
+import { useOrganizationsQuery } from "../../../hooks/generated";
 
-export const Governors = () => {
+export const Organizations = () => {
   // const chainIds = ["eip155:1"];
 
   // The generated hook below encapsulates react-query to return the query response data,
   // along with errors and important states like isLoading and isSuccess.
   // You can learn more about this here: https://react-query-v3.tanstack.com/guides/queries
 
-  const { data, isLoading } = useGovernorsQuery({
+  const { data, isLoading } = useOrganizationsQuery({
     input: {
       filters: {
-        organizationId: 2207450143689540900,
+        chainId: "eip155:1",
       },
     },
     pagination: { limit: 8, offset: 0 },
     sort: { field: "TOTAL_PROPOSALS", order: "DESC" },
   });
 
-  const { governors } = (data as { governors: Governor[] }) ?? [];
+  const { organizations } = (data as { organizations: { nodes: Organization[] } }) ?? [];
 
   if (isLoading)
     return (
@@ -29,13 +29,13 @@ export const Governors = () => {
 
   return (
     <div className="governorList">
-      <h2>Mainnet ETH Governors</h2>
-      {governors?.length && <GovernorsTable governors={governors}></GovernorsTable>}
+      <h2>Mainnet ETH Organizations</h2>
+      {organizations?.nodes.length && <OrganizationsTable organizations={organizations.nodes}></OrganizationsTable>}
     </div>
   );
 };
 
-const GovernorsTable = ({ governors }: { governors: Governor[] }) => {
+const OrganizationsTable = ({ organizations }: { organizations: Organization[] }) => {
   return (
     <table className="styledTable">
       <thead>
@@ -46,13 +46,13 @@ const GovernorsTable = ({ governors }: { governors: Governor[] }) => {
         </tr>
       </thead>
       <tbody>
-        {governors.map((governor, index) => {
-          const totalVoters = governor.delegatesCount;
+        {organizations.map((organization, index) => {
+          const totalVoters = organization.delegatesCount;
           return (
-            <tr key={`governor-row-${index}`}>
-              <td>{governor.name}</td>
+            <tr key={`organization-row-${index}`}>
+              <td>{organization.name}</td>
               <td>{totalVoters}</td>
-              <td>{governor.proposalStats.total}</td>
+              <td>{organization.metadata?.description}</td>
             </tr>
           );
         })}
