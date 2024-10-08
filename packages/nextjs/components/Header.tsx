@@ -17,6 +17,10 @@ type HeaderMenuLink = {
 
 export const menuLinks: HeaderMenuLink[] = [
   {
+    label: "Home",
+    href: "/",
+  },
+  {
     label: "Launch App",
     href: "/debug",
     icon: <Rocket className="h-4 w-4" />,
