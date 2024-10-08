@@ -10,17 +10,19 @@ const Home: NextPage = () => {
 
   return (
     <>
-      {/* Hero Section */}
-      <div className="flex flex-col items-center justify-center min-h-screen">
-        <h1 className="text-5xl font-extrabold mb-4 text-center">
-          Revolutionize Your DAO Governance with AI & Automation
-        </h1>
-        <h2 className="text-2xl mb-8 text-center">
-          Streamline decision-making and governance for your DAO across multiple blockchains—powered by advanced AI and
-          automation.
-        </h2>
-        <Address address={connectedAddress} />
-        {/* Add your hero visual here */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Hero Section */}
+        <div className="flex flex-col items-center justify-center min-h-screen">
+          <h1 className="text-5xl font-extrabold mb-4 text-center">
+            Revolutionize Your DAO Governance with AI & Automation
+          </h1>
+          <h2 className="text-2xl mb-8 text-center">
+            Streamline decision-making and governance for your DAO across multiple blockchains—powered by advanced AI
+            and automation.
+          </h2>
+          <Address address={connectedAddress} />
+          {/* Add your hero visual here */}
+        </div>
       </div>
 
       {/* Value Proposition Section */}
