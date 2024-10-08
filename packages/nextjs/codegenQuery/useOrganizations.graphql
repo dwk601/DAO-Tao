@@ -1,0 +1,34 @@
+# organizations_query.graphql
+
+query Organizations($input: OrganizationsInput) {
+  organizations(input: $input) {
+    nodes {
+      ... on Organization {
+        id
+        slug
+        name
+        chainIds
+        governorIds
+        tokenIds
+        metadata {
+          description
+        }
+        creator {
+          ... on Account {
+            id
+            name
+            address
+          }
+        }
+        proposalsCount
+        delegatesCount
+        tokenOwnersCount
+      }
+    }
+    pageInfo {
+      firstCursor
+      lastCursor
+      count
+    }
+  }
+}

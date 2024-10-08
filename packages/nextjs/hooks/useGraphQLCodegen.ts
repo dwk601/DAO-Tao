@@ -3,12 +3,11 @@ export const useGraphQLCodegen = <Data, Variables extends Record<string, unknown
 ): ((variables?: Variables) => Promise<Data>) => {
   return (variables?: Variables) =>
     // @ts-expect-error
-    fetch(import.meta.env.VITE_TALLY_API_URL, {
+    fetch(process.env.NEXT_PUBLIC_TALLY_API_URL, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        // @ts-expect-error
-        "Api-Key": import.meta.env.VITE_TALLY_API_KEY,
+        "Api-Key": process.env.NEXT_PUBLIC_TALLY_API_KEY,
       },
       body: JSON.stringify({
         query,

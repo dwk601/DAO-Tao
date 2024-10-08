@@ -5,7 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Rocket } from "lucide-react";
-import { Bars3Icon } from "@heroicons/react/24/outline";
+import { Bars3Icon, UserGroupIcon } from "@heroicons/react/24/outline";
 import { FaucetButton, RainbowKitCustomConnectButton } from "~~/components/scaffold-eth";
 import { useOutsideClick } from "~~/hooks/scaffold-eth";
 
@@ -24,6 +24,11 @@ export const menuLinks: HeaderMenuLink[] = [
     label: "Launch App",
     href: "/debug",
     icon: <Rocket className="h-4 w-4" />,
+  },
+  {
+    label: "DAOs",
+    href: "/tally",
+    icon: <UserGroupIcon className="h-4 w-4" />,
   },
 ];
 

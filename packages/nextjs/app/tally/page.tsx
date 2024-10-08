@@ -1,26 +1,18 @@
-import "./App.css";
+"use client";
+
 import { Governors } from "./_components/Governors";
+import { Organizations } from "./_components/Organizations";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
-function App() {
+function Tally() {
   const queryClient = new QueryClient();
 
   return (
     <QueryClientProvider contextSharing={true} client={queryClient}>
-      <div className="App">
-        <Header />
-        <Governors />
-      </div>
+      <Organizations />
+      <Governors />
     </QueryClientProvider>
   );
 }
 
-const Header = () => {
-  return (
-    <div>
-      <h1>Tally API Quickstart</h1>
-    </div>
-  );
-};
-
-export default App;
+export default Tally;

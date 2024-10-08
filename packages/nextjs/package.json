@@ -12,7 +12,8 @@
     "check-types": "tsc --noEmit --incremental",
     "vercel": "vercel",
     "vercel:yolo": "vercel --build-env NEXT_PUBLIC_IGNORE_BUILD_ERROR=true",
-    "gen": "run-p gen:*",
+    "clean": "rimraf ./autogen/schema.ts ./hooks/generated.js",
+    "gen": "yarn clean && yarn gen:types && yarn gen:hooks",
     "gen:types": "npx graphql-code-generator --config ./codegen.ts",
     "gen:hooks": "esbuild autogen/schema.ts --format=esm --outfile=./hooks/generated.js"
   },
@@ -61,6 +62,7 @@
     "npm-run-all": "^4.1.5",
     "postcss": "^8.4.45",
     "prettier": "^2.8.4",
+    "rimraf": "^6.0.1",
     "tailwindcss": "^3.4.11",
     "type-fest": "^4.6.0",
     "typescript": "5.5.3",

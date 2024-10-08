@@ -1,7 +1,7 @@
 import type { CodegenConfig } from "@graphql-codegen/cli";
 import * as dotenv from "dotenv";
 
-dotenv.config({path: __dirname + '/.env.local'});
+dotenv.config({ path: __dirname + "/.env.local" });
 
 const config: CodegenConfig = {
   schema: [
@@ -31,7 +31,7 @@ const config: CodegenConfig = {
           AccountID: "string",
         },
         fetcher: {
-          func: "./autogen/useGraphQLCodegen#useGraphQLCodegen",
+          func: "./useGraphQLCodegen#useGraphQLCodegen",
           isReactHook: true,
         },
       },
