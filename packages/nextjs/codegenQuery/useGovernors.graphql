@@ -1,0 +1,39 @@
+query Governors($input: GovernorsInput!) {
+  governors(input: $input) {
+    nodes {
+      ... on Governor {
+        ...GovernorFragment
+      }
+    }
+    pageInfo {
+      firstCursor
+      lastCursor
+      count
+    }
+  }
+}
+
+fragment GovernorFragment on Governor {
+  id,
+  chainId,
+  contracts,
+  isIndexing,
+  isBehind,
+  isPrimary,
+  kind,
+  lastIndexedBlock,
+  name,
+  organization,
+  proposalStats,
+  parameters,
+  quorum,
+  slug,
+  timelockId,
+  tokenId,
+  token,
+  type,
+  delegatesCount,
+  delegatesVotesCount,
+  tokenOwnersCount,
+  metadata,
+}
