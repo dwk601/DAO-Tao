@@ -38,3 +38,5 @@ yarn-error.log*
 
 autogen/*
 hooks/generated.js
+/autogen
+/autogen/*

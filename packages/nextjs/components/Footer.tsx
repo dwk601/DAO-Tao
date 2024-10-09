@@ -41,18 +41,16 @@ export const Footer = () => {
           <SwitchTheme className={`pointer-events-auto ${isLocalNetwork ? "self-end md:self-auto" : ""}`} />
         </div>
       </div>
-      <div className="w-full">
-        <ul className="menu menu-horizontal w-full">
-          <div className="flex justify-center items-center gap-2 text-sm w-full">
-            <div className="text-center"></div>
-            <div className="flex items-center gap-2">
-              <span>© 2024</span>
-              <span>Dao-Tao</span>
-            </div>
-            <div className="flex justify-center items-center gap-2"></div>
+      <footer className="text-base-content">
+        {/* Brand */}
+        <aside className="py-4 px-8 w-full flex gap-2 justify-between items-center text-sm">
+          <div className="flex items-center gap-2">
+            <img alt="Logo" src="/logo.png" className="w-6" />
+            <p className="text-xl">Dao-Tao</p>
           </div>
-        </ul>
-      </div>
+          <p className="text-right">Copyright © 2024 - All rights reserved</p>
+        </aside>
+      </footer>
     </div>
   );
 };

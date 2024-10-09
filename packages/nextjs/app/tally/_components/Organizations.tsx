@@ -20,21 +20,25 @@ export const Organizations = ({ chainId }: { chainId: number }) => {
     sort: { field: "TOTAL_PROPOSALS", order: "DESC" },
   });
 
-  const { organizations } = (data as { organizations: { nodes: Organization[] } }) ?? [];
+  const organizations = data?.organizations?.nodes ?? [];
 
   // const { readContracts } = useReadContracts();
 
   if (isLoading)
     return (
-      <div className="tableLoading">
-        <b>loading...</b>
+      <div className="flex justify-center items-center h-full">
+        <div className="text-lg font-bold">Loading...</div>
       </div>
     );
 
   return (
-    <div className="governorList">
-      <h2>Mainnet ETH Organizations</h2>
-      {organizations?.nodes.length && <OrganizationsTable organizations={organizations.nodes}></OrganizationsTable>}
+    <div className="p-4">
+      <h2 className="text-2xl font-bold mb-4">Mainnet ETH Organizations</h2>
+      {organizations.length > 0 ? (
+        <OrganizationsTable organizations={organizations} />
+      ) : (
+        <p className="text-center">No organizations found.</p>
+      )}
     </div>
   );
 };
