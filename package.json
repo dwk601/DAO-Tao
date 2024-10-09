@@ -45,6 +45,7 @@
     "node": ">=18.18.0"
   },
   "dependencies": {
+    "@anthropic-ai/sdk": "^0.29.0",
     "lucide-react": "^0.451.0"
   }
 }
