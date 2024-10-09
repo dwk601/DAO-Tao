@@ -22,6 +22,7 @@ query Governors($input: GovernorsInput!) {
             name
           }
         }
+        tokenId
       }
     }
     pageInfo {

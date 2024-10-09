@@ -23,6 +23,8 @@ query Organizations($input: OrganizationsInput) {
         proposalsCount
         delegatesCount
         tokenOwnersCount
+        tokenIds
+        governorIds
       }
     }
     pageInfo {
