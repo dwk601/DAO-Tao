@@ -22,7 +22,7 @@ export const menuLinks: HeaderMenuLink[] = [
   },
   {
     label: "Launch App",
-    href: "/debug",
+    href: "/daotaoapp",
     icon: <Rocket className="h-4 w-4" />,
   },
   {
