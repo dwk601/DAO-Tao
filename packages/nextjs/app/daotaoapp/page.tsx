@@ -48,27 +48,27 @@ const DAOTAOApp: NextPage = () => {
   };
 
   return (
-    <div className="container mx-auto p-4">
-      <div className="text-center mt-8 bg-secondary p-10">
+    <div className="container mx-auto p-4 max-w-2xl">
+      <div className="text-center mt-8 p-10 card bg-base-200">
         <h1 className="text-4xl my-0">AI DAO Synopsys</h1>
         <p className="text-neutral">Chat with Claude about DAOs (in poems)</p>
       </div>
 
-      <form onSubmit={handleSubmit} className="mt-8">
+      <form onSubmit={handleSubmit} className="mt-8 card bg-base-100 p-4 shadow-md">
         <input
           type="text"
           value={question}
           onChange={e => setQuestion(e.target.value)}
-          className="w-full p-2 border rounded"
+          className="w-full p-2 input input-bordered"
           placeholder="Enter your question here..."
         />
-        <button type="submit" className="mt-2 px-4 py-2 bg-primary text-white rounded" disabled={loading}>
+        <button type="submit" className="mt-2 btn btn-primary w-full" disabled={loading}>
           {loading ? "Thinking..." : "Get Poem"}
         </button>
       </form>
 
       {response && (
-        <div className="mt-8 p-4 bg-secondary rounded">
+        <div className="mt-8 p-4 card bg-base-200 shadow-md">
           <h2 className="text-2xl mb-2">Claude&apos;s Poetic Response:</h2>
           <pre className="whitespace-pre-wrap">{response}</pre>
         </div>
