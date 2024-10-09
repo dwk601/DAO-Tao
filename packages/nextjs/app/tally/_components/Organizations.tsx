@@ -1,7 +1,9 @@
 import { Organization } from "../../../autogen/schema";
 import { useOrganizationsQuery } from "../../../hooks/generated";
 
-export const Organizations = () => {
+// import { useReadContracts } from 'wagmi';
+
+export const Organizations = ({ chainId }: { chainId: number }) => {
   // const chainIds = ["eip155:1"];
 
   // The generated hook below encapsulates react-query to return the query response data,
@@ -11,7 +13,7 @@ export const Organizations = () => {
   const { data, isLoading } = useOrganizationsQuery({
     input: {
       filters: {
-        chainId: "eip155:1",
+        chainId: `eip155:${chainId}`,
       },
     },
     pagination: { limit: 8, offset: 0 },
@@ -19,6 +21,8 @@ export const Organizations = () => {
   });
 
   const { organizations } = (data as { organizations: { nodes: Organization[] } }) ?? [];
+
+  // const { readContracts } = useReadContracts();
 
   if (isLoading)
     return (
@@ -47,12 +51,14 @@ const OrganizationsTable = ({ organizations }: { organizations: Organization[] }
       </thead>
       <tbody>
         {organizations.map((organization, index) => {
-          const totalVoters = organization.delegatesCount;
           return (
             <tr key={`organization-row-${index}`}>
               <td>{organization.name}</td>
-              <td>{totalVoters}</td>
-              <td>{organization.metadata?.description}</td>
+              <td>
+                {organization.tokenIds.map((tokenId, index) => {
+                  return <span key={`token-id-${index}`}>{tokenId}</span>;
+                })}
+              </td>
             </tr>
           );
         })}

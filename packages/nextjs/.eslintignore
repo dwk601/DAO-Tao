@@ -10,3 +10,4 @@ node_modules/
 **/*.svg
 **/generated/**/*
 **/autogen/**/*
+**/protobuf/**/*
