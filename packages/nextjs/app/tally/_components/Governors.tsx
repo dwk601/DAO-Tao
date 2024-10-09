@@ -20,45 +20,51 @@ export const Governors = () => {
 
   if (isLoading)
     return (
-      <div className="tableLoading">
-        <b>loading...</b>
+      <div className="flex justify-center items-center h-full">
+        <div className="text-lg font-bold">Loading...</div>
       </div>
     );
 
   return (
-    <div className="governorList">
-      <h2>Mainnet ETH Governors</h2>
-      {governors.length > 0 && <GovernorsTable governors={governors} />}
+    <div className="p-4">
+      <h2 className="text-2xl font-bold mb-4">Mainnet ETH Governors</h2>
+      {governors.length > 0 ? (
+        <GovernorsTable governors={governors} />
+      ) : (
+        <p className="text-center">No governors found.</p>
+      )}
     </div>
   );
 };
 
 const GovernorsTable = ({ governors }: { governors: Governor[] }) => {
   return (
-    <table className="styledTable">
-      <thead>
-        <tr>
-          <th>Name</th>
-          <th>Voters</th>
-          <th>Proposals</th>
-          <th>Token Owners</th>
-          <th>Organization</th>
-        </tr>
-      </thead>
-      <tbody>
-        {governors.map((governor, index) => {
-          const totalVoters = governor.delegatesCount;
-          return (
-            <tr key={`governor-row-${index}`}>
-              <td>{governor.name}</td>
-              <td>{totalVoters}</td>
-              <td>{governor.proposalStats.total}</td>
-              <td>{governor.tokenOwnersCount}</td>
-              <td>{governor.organization.name}</td>
-            </tr>
-          );
-        })}
-      </tbody>
-    </table>
+    <div className="overflow-x-auto">
+      <table className="table w-full">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Voters</th>
+            <th>Proposals</th>
+            <th>Token Owners</th>
+            <th>Organization</th>
+          </tr>
+        </thead>
+        <tbody>
+          {governors.map((governor, index) => {
+            const totalVoters = governor.delegatesCount;
+            return (
+              <tr key={`governor-row-${index}`}>
+                <td>{governor.name}</td>
+                <td>{totalVoters}</td>
+                <td>{governor.proposalStats.total}</td>
+                <td>{governor.tokenOwnersCount}</td>
+                <td>{governor.organization.name}</td>
+              </tr>
+            );
+          })}
+        </tbody>
+      </table>
+    </div>
   );
 };
